@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  progressDeadlineSeconds: 60
+  strategy:
+    rollingUpdate:
+      maxSurge: 20%
+      maxUnavailable: 20%
+  selector:
+    matchLabels:
+      app: my-nginx
+  template:
+    metadata:
+      labels:
+        app: my-nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          imagePullPolicy: IfNotPresent
+          startupProbe:
+            tcpSocket:
+              port: 80
+          livenessProbe:
+            tcpSocket:
+              port: 80
+          readinessProbe:
+            tcpSocket:
+              port: 80
